@@ -32,3 +32,7 @@ Payment collection, SMS/Zalo notifications, AI chatbot, and physical locker cont
 ## Security note
 
 This is intended for local development and demonstration. Before internet deployment, add HTTPS termination, rate limiting, CSRF protections appropriate to the deployment, session revocation/rotation, operational backups, and provider-specific webhook signature verification.
+
+## Sanitized SQLite artifact
+
+`velobox_schema_only.sqlite` contains the VELOBOX table schema with all tables empty. It is for schema inspection only; the local operational database is excluded from the repository.
