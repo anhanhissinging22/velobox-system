@@ -1,6 +1,6 @@
 # VELOBOX
 
-Local VELOBOX locker operations prototype with a Node.js HTTP API and SQLite persistence.
+VELOBOX locker operations app with a Node.js HTTP API and SQLite persistence.
 
 ## Requirements
 
@@ -14,7 +14,11 @@ node server.mjs
 
 Open <http://127.0.0.1:4173>. On first launch, create the initial system administrator. The database is created as `velobox.sqlite` beside `server.mjs`; it starts empty and is excluded from Git.
 
-Set `PORT` to choose another local port or `VELOBOX_DB` to store the SQLite file elsewhere.
+Set `PORT` to choose another port, `HOST` to set the bind address, or `VELOBOX_DB` to store the SQLite file elsewhere.
+
+## Deploy to Render
+
+This repository includes a Render Blueprint at [render.yaml](render.yaml). In Render, choose **New → Blueprint**, connect this GitHub repository, review the service and persistent disk, then deploy. Render assigns the public `onrender.com` URL after deployment. The SQLite database is stored on a persistent disk mounted at `/var/data`; the blueprint uses the Starter service plan because Render persistent disks require a paid service. The sanitized `velobox_schema_only.sqlite` is not used as the live database: the app creates an empty operational database on first start.
 
 ## Included backend
 
@@ -31,7 +35,7 @@ Payment collection, SMS/Zalo notifications, AI chatbot, and physical locker cont
 
 ## Security note
 
-This is intended for local development and demonstration. Before internet deployment, add HTTPS termination, rate limiting, CSRF protections appropriate to the deployment, session revocation/rotation, operational backups, and provider-specific webhook signature verification.
+This is an early deployment prototype. Before real customer use, add rate limiting, CSRF protections appropriate to the deployment, session revocation/rotation, operational backups, and provider-specific webhook signature verification.
 
 ## Sanitized SQLite artifact
 
