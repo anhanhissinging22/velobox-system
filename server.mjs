@@ -129,5 +129,5 @@ async function route(req,res){
 }
 
 const server=http.createServer((req,res)=>{route(req,res).catch(err=>{console.error(err);if(!res.headersSent)send(res,500,{error:'Lỗi máy chủ',detail:process.env.NODE_ENV==='development'?err.message:undefined});});});
-const port=Number(process.env.PORT)||4173;server.listen(port,'127.0.0.1',()=>console.log(`VELOBOX đang chạy tại http://127.0.0.1:${port}`));
+const port=Number(process.env.PORT)||4173;const host=process.env.HOST||'127.0.0.1';server.listen(port,host,()=>console.log(`VELOBOX đang chạy tại http://${host}:${port}`));
 process.on('SIGINT',()=>{server.close(()=>{db.close();process.exit(0);});});
