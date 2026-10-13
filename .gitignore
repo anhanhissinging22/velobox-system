@@ -1,0 +1,17 @@
+# Local database and SQLite journal files
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Uploaded source/reference material is not part of the application
+/sources/
+
+# Dependencies and OS/editor files
+node_modules/
+.DS_Store
+Thumbs.db
