@@ -2,18 +2,22 @@
 
 Prototype vận hành chạy trên Node.js và SQLite cục bộ. Giao diện được phục vụ từ `velobox_system.html`; xử lý nghiệp vụ và dữ liệu được quản lý bởi `server.mjs`. Database mặc định là `velobox.sqlite` trong thư mục dự án và không được đưa lên Git.
 
-## Lưu source trên GitHub, chạy ứng dụng tại máy này
+## Dùng giao diện GitHub Pages, lưu SQLite trên máy chủ riêng
 
-GitHub chỉ lưu mã nguồn và tài liệu. Backend cùng SQLite vẫn chạy trên máy chủ local; GitHub Pages không chạy Node.js và không kết nối được tới SQLite trên máy này.
+Người dùng chỉ cần trình duyệt; không cần cài VELOBOX. GitHub Pages phục vụ giao diện tĩnh, còn Node.js và SQLite chạy trên máy chủ của bạn. GitHub Pages không chạy backend Node.js, vì vậy cần một địa chỉ HTTPS công khai ổn định (tunnel) trỏ về máy chủ để giao diện gọi API. Không mở cổng router trực tiếp ra Internet.
 
-Để chạy cho các thiết bị trong cùng mạng nội bộ:
+Thiết lập:
 
 1. Cài Node.js có hỗ trợ `node:sqlite` (Node.js 22 trở lên).
-2. Mở thư mục dự án trong VS Code.
-3. Chạy `start-local-hosting.bat`.
-4. Trên máy chủ, mở `http://127.0.0.1:4173/`. Trên thiết bị khác cùng mạng Wi-Fi/LAN, mở `http://<địa-chỉ-IPv4-của-máy-chủ>:4173/` (xem địa chỉ bằng lệnh `ipconfig`).
+2. Chạy `node server.mjs` trên máy sẽ lưu database; hoàn tất thiết lập Admin trước khi bật tunnel.
+3. Tạo một tunnel HTTPS ổn định trỏ về `http://127.0.0.1:4173`. Máy chủ phải luôn bật để người dùng truy cập.
+4. Ghi URL tunnel vào `apiBaseUrl` trong `velobox-config.js`, ví dụ `https://api.example.com`.
+5. Đảm bảo `VELOBOX_ALLOWED_ORIGINS` có origin GitHub Pages `https://anhanhissinging22.github.io` (mặc định đã cho phép origin này), rồi khởi động lại backend.
+6. Commit và push source lên nhánh `main`. Trong GitHub vào **Settings → Pages**, chọn deploy từ nhánh `main` và thư mục `/ (root)`. Link sẽ có dạng `https://anhanhissinging22.github.io/velobox-system/`.
 
-Máy chủ và thiết bị khách cần ở cùng mạng nội bộ; không cấu hình mở cổng này trực tiếp ra Internet. Dữ liệu người dùng phát sinh được lưu trong `velobox.sqlite` trên máy chủ này.
+Tất cả người dùng truy cập cùng dữ liệu SQLite trên máy chủ. Không đưa file database, khóa tunnel hoặc thông tin bí mật lên GitHub. Nếu dùng tunnel tạm có URL thay đổi, cần cập nhật `velobox-config.js` và publish lại; nên dùng hostname tunnel ổn định.
+
+Để chỉ dùng trong cùng mạng nội bộ, chạy `start-local-hosting.bat` và mở `http://<địa-chỉ-IPv4-của-máy-chủ>:4173/` từ thiết bị khác (xem `ipconfig`).
 
 ## Chạy chỉ trên máy hiện tại
 

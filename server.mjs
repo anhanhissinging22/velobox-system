@@ -45,6 +45,7 @@ for (const order of db.prepare("SELECT id,neighborhood_id FROM orders WHERE assi
 const roles = new Set(['SYSTEM_ADMIN','OPERATIONS','CARRIER_ADMIN','SHIPPER','RESIDENT','SITE_MANAGER','FINANCE','TECHNICIAN','BUILDING_ADMIN']);
 const roleLabels = {SYSTEM_ADMIN:'Admin VELOBOX',OPERATIONS:'Nhân viên vận hành',CARRIER_ADMIN:'Quản trị đối tác giao hàng',SHIPPER:'Shipper',RESIDENT:'Người nhận',SITE_MANAGER:'Quản lý điểm đặt / BQL',FINANCE:'Tài chính',TECHNICIAN:'Kỹ thuật viên',BUILDING_ADMIN:'Quản trị viên / BQL'};
 const now = () => new Date().toISOString();
+const allowedOrigins = new Set((process.env.VELOBOX_ALLOWED_ORIGINS || 'https://anhanhissinging22.github.io,http://localhost:4173,http://127.0.0.1:4173').split(',').map(value=>value.trim()).filter(Boolean));
 const initials = value => String(value||'').trim().replace(/đ/gi,'d').normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/[^a-zA-Z0-9]+/).filter(Boolean).map(word=>word[0]).join('').toUpperCase();
 const dateCode = (value=new Date()) => { const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',year:'2-digit'}).formatToParts(value);return `${parts.find(p=>p.type==='day').value}${parts.find(p=>p.type==='month').value}${parts.find(p=>p.type==='year').value}`; };
 for(const row of db.prepare("SELECT id,name FROM neighborhoods WHERE code='' OR code IS NULL").all())db.prepare('UPDATE neighborhoods SET code=? WHERE id=?').run(initials(row.name),row.id);
@@ -60,7 +61,8 @@ function audit(user, action, entity, id='', details='') {
 }
 function parseBody(req) { return new Promise((resolve,reject)=>{ let raw=''; req.on('data',c=>{raw+=c;if(raw.length>1_000_000) req.destroy();}); req.on('end',()=>{try{resolve(raw?JSON.parse(raw):{});}catch{reject(new Error('JSON không hợp lệ'));}}); req.on('error',reject); }); }
 function currentUser(req) {
-  const token=(req.headers.cookie||'').split(';').map(v=>v.trim()).find(v=>v.startsWith('velobox_session='))?.slice('velobox_session='.length);
+  const bearer=String(req.headers.authorization||'').match(/^Bearer\s+(.+)$/i)?.[1];
+  const token=bearer||(req.headers.cookie||'').split(';').map(v=>v.trim()).find(v=>v.startsWith('velobox_session='))?.slice('velobox_session='.length);
   if(!token) return null;
   const s=db.prepare('SELECT user_id FROM sessions WHERE token_hash=? AND expires_at>?').get(tokenHash(token),now());
   if(!s)return null;const user=db.prepare('SELECT id,name,email,phone,role,building,apartment,active FROM users WHERE id=? AND active=1').get(s.user_id);if(user)user.neighborhood_ids=db.prepare('SELECT neighborhood_id FROM user_neighborhoods WHERE user_id=?').all(user.id).map(x=>x.neighborhood_id);return user;
@@ -101,21 +103,21 @@ async function route(req,res){
   const id=randomUUID(),salt=randomBytes(16).toString('hex'),hash=scryptSync(String(b.password),salt,64).toString('hex');
   db.prepare('INSERT INTO users(id,name,email,phone,role,password_hash,created_at) VALUES(?,?,?,?,?,?,?)').run(id,b.name,String(b.email).toLowerCase(),'', 'SYSTEM_ADMIN',`${salt}:${hash}`,now());
   const token=randomBytes(32).toString('base64url');db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(tokenHash(token),id,new Date(Date.now()+7*864e5).toISOString());audit({id,name:b.name},'setup.completed','user',id,'Tạo quản trị viên đầu tiên');
-  return send(res,201,{user:db.prepare('SELECT id,name,email,role FROM users WHERE id=?').get(id)},{'set-cookie':cookie(token)});
+  return send(res,201,{user:db.prepare('SELECT id,name,email,role FROM users WHERE id=?').get(id),token},{'set-cookie':cookie(token)});
  }
  if(p==='/api/login'&&method==='POST'){
   const b=await parseBody(req),u=db.prepare('SELECT * FROM users WHERE email=? AND active=1').get(String(b.email||'').toLowerCase());
   if(!u) return send(res,401,{error:'Email hoặc mật khẩu không đúng'});
   const [salt,expected]=u.password_hash.split(':');const actual=scryptSync(String(b.password||''),salt,64);if(!timingSafeEqual(actual,Buffer.from(expected,'hex')))return send(res,401,{error:'Email hoặc mật khẩu không đúng'});
-  const token=randomBytes(32).toString('base64url');db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(tokenHash(token),u.id,new Date(Date.now()+7*864e5).toISOString());audit(u,'auth.login','user',u.id,'Đăng nhập');return send(res,200,{user:{id:u.id,name:u.name,email:u.email,role:u.role,roleLabel:roleLabels[u.role]}},{'set-cookie':cookie(token)});
+  const token=randomBytes(32).toString('base64url');db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(tokenHash(token),u.id,new Date(Date.now()+7*864e5).toISOString());audit(u,'auth.login','user',u.id,'Đăng nhập');return send(res,200,{user:{id:u.id,name:u.name,email:u.email,role:u.role,roleLabel:roleLabels[u.role]},token},{'set-cookie':cookie(token)});
  }
  if(p==='/api/register'&&method==='POST'){
   const b=await parseBody(req),name=String(b.name||'').trim(),email=String(b.email||'').trim().toLowerCase(),phone=String(b.phone||'').trim(),neighborhood=db.prepare('SELECT id,name FROM neighborhoods WHERE id=?').get(b.neighborhood_id);
   if(!name||!/^\S+@\S+\.\S+$/.test(email)||!phone||!neighborhood)return send(res,400,{error:'Cần họ tên, email, số điện thoại và khu dân cư hợp lệ'});
   if(db.prepare('SELECT 1 FROM users WHERE email=?').get(email))return send(res,409,{error:'Email đã được sử dụng'});
-  const id=randomUUID(),salt=randomBytes(16).toString('hex'),hash=scryptSync('12345678',salt,64).toString('hex'),at=now();db.exec('BEGIN IMMEDIATE');try{db.prepare('INSERT INTO users(id,name,email,phone,role,building,address,password_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?)').run(id,name,email,phone,'RESIDENT',neighborhood.name,String(b.address||'').trim(),`${salt}:${hash}`,at);db.prepare('INSERT INTO user_neighborhoods(user_id,neighborhood_id) VALUES(?,?)').run(id,neighborhood.id);audit({id,name},'user.registered','user',id,'RESIDENT; self-registration');const token=randomBytes(32).toString('base64url');db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(tokenHash(token),id,new Date(Date.now()+7*864e5).toISOString());db.exec('COMMIT');return send(res,201,{user:{id,name,email,phone,role:'RESIDENT',building:neighborhood.name,address:String(b.address||'').trim(),active:1}},{'set-cookie':cookie(token)});}catch(error){db.exec('ROLLBACK');throw error;}
+  const id=randomUUID(),salt=randomBytes(16).toString('hex'),hash=scryptSync('12345678',salt,64).toString('hex'),at=now();db.exec('BEGIN IMMEDIATE');try{db.prepare('INSERT INTO users(id,name,email,phone,role,building,address,password_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?)').run(id,name,email,phone,'RESIDENT',neighborhood.name,String(b.address||'').trim(),`${salt}:${hash}`,at);db.prepare('INSERT INTO user_neighborhoods(user_id,neighborhood_id) VALUES(?,?)').run(id,neighborhood.id);audit({id,name},'user.registered','user',id,'RESIDENT; self-registration');const token=randomBytes(32).toString('base64url');db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(tokenHash(token),id,new Date(Date.now()+7*864e5).toISOString());db.exec('COMMIT');return send(res,201,{user:{id,name,email,phone,role:'RESIDENT',building:neighborhood.name,address:String(b.address||'').trim(),active:1},token},{'set-cookie':cookie(token)});}catch(error){db.exec('ROLLBACK');throw error;}
  }
- if(p==='/api/logout'&&method==='POST'){const u=currentUser(req);const t=(req.headers.cookie||'').match(/velobox_session=([^;]+)/)?.[1];if(t)db.prepare('DELETE FROM sessions WHERE token_hash=?').run(tokenHash(t));if(u)audit(u,'auth.logout','user',u.id,'Đăng xuất');return send(res,200,{ok:true},{'set-cookie':cookie('',0)});}
+ if(p==='/api/logout'&&method==='POST'){const u=currentUser(req);const t=String(req.headers.authorization||'').match(/^Bearer\s+(.+)$/i)?.[1]||(req.headers.cookie||'').match(/velobox_session=([^;]+)/)?.[1];if(t)db.prepare('DELETE FROM sessions WHERE token_hash=?').run(tokenHash(t));if(u)audit(u,'auth.logout','user',u.id,'Đăng xuất');return send(res,200,{ok:true},{'set-cookie':cookie('',0)});}
  const user=currentUser(req);
  if(p==='/api/me'&&method==='GET'){if(!requireUser(user,res))return;return send(res,200,{user:{...user,roleLabel:roleLabels[user.role]}});}
  if(!p.startsWith('/api/')){
@@ -253,6 +255,6 @@ async function route(req,res){
  return send(res,405,{error:'Phương thức không được hỗ trợ'});
 }
 
-const server=http.createServer((req,res)=>{route(req,res).catch(err=>{console.error(err);if(!res.headersSent)send(res,500,{error:'Lỗi máy chủ',detail:process.env.NODE_ENV==='development'?err.message:undefined});});});
+const server=http.createServer((req,res)=>{const origin=req.headers.origin,sameOrigin=origin===`http://${req.headers.host}`||origin===`https://${req.headers.host}`,originAllowed=!!origin&&(allowedOrigins.has(origin)||sameOrigin);if(originAllowed){res.setHeader('access-control-allow-origin',origin);res.setHeader('vary','Origin');res.setHeader('access-control-allow-methods','GET, POST, PATCH, DELETE, OPTIONS');res.setHeader('access-control-allow-headers','Content-Type, Authorization, X-VeloBox-Secret, X-VeloBox-Source');}if(req.method==='OPTIONS'){if(!originAllowed){res.writeHead(403);return res.end();}res.writeHead(204);return res.end();}route(req,res).catch(err=>{console.error(err);if(!res.headersSent)send(res,500,{error:'Lỗi máy chủ',detail:process.env.NODE_ENV==='development'?err.message:undefined});});});
 const port=Number(process.env.PORT)||4173;const host=process.env.HOST||'127.0.0.1';server.listen(port,host,()=>console.log(`VELOBOX đang chạy tại http://${host}:${port}`));
 process.on('SIGINT',()=>{server.close(()=>{db.close();process.exit(0);});});
