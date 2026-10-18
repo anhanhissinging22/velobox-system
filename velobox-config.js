@@ -1,3 +1,3 @@
-// Set this to the stable public HTTPS URL that forwards to the local VELOBOX server.
-// Backend hostname must be routed to the HTTPS tunnel for the local Node server.
-window.VELOBOX_CONFIG = { apiBaseUrl: 'https://api.trananhtlu.id.vn' };
+// Temporary Cloudflare Quick Tunnel for the currently running local API.
+// Its URL changes when the tunnel stops; publish the replacement URL in this file after restarting it.
+window.VELOBOX_CONFIG = { apiBaseUrl: 'https://costume-too-noble-standard.trycloudflare.com' };
