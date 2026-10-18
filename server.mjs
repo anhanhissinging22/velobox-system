@@ -45,7 +45,7 @@ for (const order of db.prepare("SELECT id,neighborhood_id FROM orders WHERE assi
 const roles = new Set(['SYSTEM_ADMIN','OPERATIONS','CARRIER_ADMIN','SHIPPER','RESIDENT','SITE_MANAGER','FINANCE','TECHNICIAN','BUILDING_ADMIN']);
 const roleLabels = {SYSTEM_ADMIN:'Admin VELOBOX',OPERATIONS:'Nhân viên vận hành',CARRIER_ADMIN:'Quản trị đối tác giao hàng',SHIPPER:'Shipper',RESIDENT:'Người nhận',SITE_MANAGER:'Quản lý điểm đặt / BQL',FINANCE:'Tài chính',TECHNICIAN:'Kỹ thuật viên',BUILDING_ADMIN:'Quản trị viên / BQL'};
 const now = () => new Date().toISOString();
-const allowedOrigins = new Set((process.env.VELOBOX_ALLOWED_ORIGINS || 'https://velobox.trananhtlu.id.vn,https://anhanhissinging22.github.io,http://localhost:4173,http://127.0.0.1:4173').split(',').map(value=>value.trim()).filter(Boolean));
+const allowedOrigins = new Set((process.env.VELOBOX_ALLOWED_ORIGINS || 'https://trananhtlu.id.vn,https://anhanhissinging22.github.io,http://localhost:4173,http://127.0.0.1:4173').split(',').map(value=>value.trim()).filter(Boolean));
 const initials = value => String(value||'').trim().replace(/đ/gi,'d').normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/[^a-zA-Z0-9]+/).filter(Boolean).map(word=>word[0]).join('').toUpperCase();
 const dateCode = (value=new Date()) => { const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',year:'2-digit'}).formatToParts(value);return `${parts.find(p=>p.type==='day').value}${parts.find(p=>p.type==='month').value}${parts.find(p=>p.type==='year').value}`; };
 for(const row of db.prepare("SELECT id,name FROM neighborhoods WHERE code='' OR code IS NULL").all())db.prepare('UPDATE neighborhoods SET code=? WHERE id=?').run(initials(row.name),row.id);
