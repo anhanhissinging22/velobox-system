@@ -1,0 +1,47 @@
+@startuml
+title A. Tài khoản, tổ chức và phân quyền (UC01–UC07)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "VELOBOX Administrator" as R1
+actor "Operations Staff" as R2
+actor "Carrier Administrator" as R3
+actor "Shipper" as R4
+actor "Recipient" as R5
+actor "Site Manager" as R6
+actor "Finance Staff" as R7
+actor "Technician" as R8
+rectangle "VELOBOX Platform\nA. Tài khoản, tổ chức và phân quyền (UC01–UC07)" {
+  usecase "UC01\nĐăng nhập/đăng xuất" as UC01
+  usecase "UC02\nQuản lý thông tin tài khoản cá nhân" as UC02
+  usecase "UC03\nQuản lý tài khoản và vai trò" as UC03
+  usecase "UC04\nQuản lý hồ sơ đơn vị vận chuyển" as UC04
+  usecase "UC05\nQuản lý nhân viên giao hàng" as UC05
+  usecase "UC06\nPhân quyền theo vai trò, đơn vị và phạm vi" as UC06
+  usecase "UC07\nKiểm tra quyền truy cập" as UC07
+}
+R1 -- UC01
+R2 -- UC01
+R3 -- UC01
+R4 -- UC01
+R5 -- UC01
+R6 -- UC01
+R7 -- UC01
+R8 -- UC01
+R2 -- UC02
+R3 -- UC02
+R4 -- UC02
+R5 -- UC02
+R6 -- UC02
+R7 -- UC02
+R8 -- UC02
+R1 -- UC03
+R1 -- UC04
+R3 -- UC04
+R3 -- UC05
+R1 -- UC06
+UC03 ..> UC07 : <<include>>
+UC04 ..> UC07 : <<include>>
+UC05 ..> UC07 : <<include>>
+UC06 ..> UC07 : <<include>>
+@enduml

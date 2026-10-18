@@ -1,0 +1,41 @@
+@startuml
+title F. Quá hạn, gia hạn và thu hồi (UC36–UC46)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "Recipient" as R5
+actor "Operations Staff" as R2
+actor "Carrier Administrator" as R3
+actor "Authorized Shipper" as R4
+actor "Notification Service" as NS
+rectangle "VELOBOX Platform\nF. Quá hạn, gia hạn và thu hồi (UC36–UC46)" {
+  usecase "UC36\nTheo dõi thời hạn lưu giữ" as UC36
+  usecase "UC37\nGửi nhắc nhở trước hạn" as UC37
+  usecase "UC38\nChuyển sang trạng thái quá hạn" as UC38
+  usecase "UC39\nYêu cầu gia hạn" as UC39
+  usecase "UC40\nKiểm tra điều kiện và xử lý gia hạn" as UC40
+  usecase "UC41\nCập nhật thời hạn mới" as UC41
+  usecase "UC42\nThông báo quá hạn cho đơn vị vận chuyển" as UC42
+  usecase "UC43\nTiếp nhận yêu cầu thu hồi" as UC43
+  usecase "UC44\nGhi nhận kiện hàng đã lấy khỏi tủ" as UC44
+  usecase "UC45\nXác nhận bàn giao cho đơn vị vận chuyển" as UC45
+  usecase "UC46\nGiải phóng ngăn tủ sau xác nhận" as UC46
+}
+R5 -- UC39
+R2 -- UC40
+R2 -- UC43
+R3 -- UC43
+R3 -- UC45
+R4 -- UC44
+NS -- UC37
+NS -- UC42
+UC36 ..> UC37 : <<include>>
+UC38 ..> UC36 : <<extend>>
+UC39 ..> UC40 : <<include>>
+UC40 ..> UC41 : <<include>>
+UC38 ..> UC42 : <<include>>
+UC43 ..> UC38 : <<extend>>
+UC43 ..> UC44 : <<include>>
+UC44 ..> UC45 : <<include>>
+UC45 ..> UC46 : <<include>>
+@enduml

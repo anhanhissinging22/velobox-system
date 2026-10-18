@@ -1,0 +1,39 @@
+@startuml
+title H. Tích hợp đối tác và đối soát dịch vụ (UC53–UC59)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "VELOBOX Administrator" as R1
+actor "Operations Staff" as R2
+actor "Carrier Administrator" as R3
+actor "Finance Staff" as R7
+actor "E-commerce Platform" as EC
+actor "Carrier System" as CS
+rectangle "VELOBOX Platform\nH. Tích hợp đối tác và đối soát dịch vụ (UC53–UC59)" {
+  usecase "UC53\nCấu hình kết nối API/Webhook" as UC53
+  usecase "UC54\nTiếp nhận và gửi dữ liệu trạng thái" as UC54
+  usecase "UC55\nGhi nhận sản lượng sử dụng dịch vụ" as UC55
+  usecase "UC56\nLập bảng đối soát theo kỳ/hợp đồng" as UC56
+  usecase "UC57\nKiểm tra và xử lý sai lệch đối soát" as UC57
+  usecase "UC58\nCập nhật trạng thái xác nhận/thanh toán đối tác" as UC58
+  usecase "UC59\nXuất báo cáo hoạt động và sử dụng dịch vụ" as UC59
+}
+R1 -- UC53
+EC -- UC54
+CS -- UC54
+R1 -- UC54
+R2 -- UC55
+R7 -- UC56
+R3 -- UC57
+R7 -- UC57
+R7 -- UC58
+R1 -- UC59
+R2 -- UC59
+R3 -- UC59
+R7 -- UC59
+UC53 ..> UC54 : <<include>>
+UC55 ..> UC56 : <<include>>
+UC57 ..> UC56 : <<extend>>
+UC56 ..> UC58 : <<include>>
+UC59 ..> UC56 : <<extend>>
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+title B. Đơn hàng và định danh kiện hàng (UC08–UC12)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "VELOBOX Administrator" as R1
+actor "Operations Staff" as R2
+actor "Carrier Administrator" as R3
+actor "Shipper" as R4
+actor "Recipient" as R5
+actor "E-commerce Platform" as EC
+actor "Carrier System" as CS
+rectangle "VELOBOX Platform\nB. Đơn hàng và định danh kiện hàng (UC08–UC12)" {
+  usecase "UC08\nTiếp nhận dữ liệu đơn hàng/kiện hàng" as UC08
+  usecase "UC09\nĐồng bộ và cập nhật đơn hàng" as UC09
+  usecase "UC10\nLiên kết kiện hàng với người nhận, đơn vị vận chuyển và mã vận đơn" as UC10
+  usecase "UC11\nTra cứu trạng thái kiện hàng" as UC11
+  usecase "UC12\nGhi nhận lỗi dữ liệu/đơn hàng không hợp lệ" as UC12
+}
+EC -- UC08
+CS -- UC08
+EC -- UC09
+CS -- UC09
+R1 -- UC08
+R1 -- UC09
+R3 -- UC09
+R2 -- UC11
+R3 -- UC11
+R4 -- UC11
+R5 -- UC11
+R2 -- UC12
+R3 -- UC12
+UC08 ..> UC10 : <<include>>
+UC09 ..> UC10 : <<include>>
+UC12 ..> UC08 : <<extend>>
+UC12 ..> UC09 : <<extend>>
+@enduml

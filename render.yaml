@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: velobox-system
+    runtime: node
+    plan: starter
+    buildCommand: node --version
+    startCommand: node server.mjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.0.0
+      - key: HOST
+        value: 0.0.0.0
+      - key: VELOBOX_DB
+        value: /var/data/velobox.sqlite
+    disk:
+      name: velobox-data
+      mountPath: /var/data
+      sizeGB: 1

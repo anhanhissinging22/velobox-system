@@ -1,0 +1,36 @@
+@startuml
+title G. Thông báo, sự cố và truy vết (UC47–UC52)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "VELOBOX Administrator" as R1
+actor "Operations Staff" as R2
+actor "Carrier Administrator" as R3
+actor "Site Manager" as R6
+actor "Technician" as R8
+actor "Notification Service" as NS
+rectangle "VELOBOX Platform\nG. Thông báo, sự cố và truy vết (UC47–UC52)" {
+  usecase "UC47\nGửi thông báo theo sự kiện đơn hàng" as UC47
+  usecase "UC48\nTiếp nhận và phân loại sự cố" as UC48
+  usecase "UC49\nTra cứu lịch sử truy cập, mở tủ và giao nhận" as UC49
+  usecase "UC50\nXử lý sai lệch trạng thái" as UC50
+  usecase "UC51\nTheo dõi tiến độ xử lý sự cố" as UC51
+  usecase "UC52\nGhi nhật ký kiểm toán" as UC52
+}
+NS -- UC47
+R2 -- UC48
+R2 -- UC49
+R1 -- UC49
+R3 -- UC49
+R2 -- UC50
+R3 -- UC50
+R2 -- UC51
+R6 -- UC51
+R8 -- UC51
+UC48 ..> UC51 : <<include>>
+UC50 ..> UC51 : <<include>>
+UC48 ..> UC52 : <<include>>
+UC49 ..> UC52 : <<include>>
+UC50 ..> UC52 : <<include>>
+UC51 ..> UC52 : <<include>>
+@enduml

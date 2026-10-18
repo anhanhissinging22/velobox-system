@@ -1,0 +1,36 @@
+@startuml
+title E. Giao nhận và lưu giữ kiện hàng (UC27–UC35)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "Shipper" as R4
+actor "Recipient" as R5
+actor "Locker Controller" as HW
+actor "Notification Service" as NS
+rectangle "VELOBOX Platform\nE. Giao nhận và lưu giữ kiện hàng (UC27–UC35)" {
+  usecase "UC27\nBắt đầu gửi kiện vào tủ" as UC27
+  usecase "UC28\nGhi nhận kiện hàng được đưa vào tủ" as UC28
+  usecase "UC29\nXác nhận cửa đóng và trạng thái ngăn" as UC29
+  usecase "UC30\nCập nhật trạng thái đã gửi hàng" as UC30
+  usecase "UC31\nThông báo cho người nhận" as UC31
+  usecase "UC32\nXác thực quyền nhận kiện hàng" as UC32
+  usecase "UC33\nGhi nhận mở ngăn và lấy kiện hàng" as UC33
+  usecase "UC34\nXác nhận hoàn tất nhận hàng và giải phóng ngăn" as UC34
+  usecase "UC35\nLưu lịch sử giao nhận" as UC35
+}
+R4 -- UC27
+R5 -- UC32
+HW -- UC29
+HW -- UC33
+NS -- UC31
+UC27 ..> UC28 : <<include>>
+UC28 ..> UC29 : <<include>>
+UC29 ..> UC30 : <<include>>
+UC30 ..> UC31 : <<include>>
+UC32 ..> UC33 : <<include>>
+UC33 ..> UC34 : <<include>>
+UC28 ..> UC35 : <<include>>
+UC30 ..> UC35 : <<include>>
+UC33 ..> UC35 : <<include>>
+UC34 ..> UC35 : <<include>>
+@enduml

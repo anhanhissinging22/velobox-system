@@ -1,0 +1,33 @@
+@startuml
+title D. QR động và mở tủ (UC19–UC26)
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "Shipper" as R4
+actor "Recipient" as R5
+actor "VELO-Scan" as SCAN
+actor "Locker Controller" as HW
+rectangle "VELOBOX Platform\nD. QR động và mở tủ (UC19–UC26)" {
+  usecase "UC19\nYêu cầu phiên truy cập tủ" as UC19
+  usecase "UC20\nTạo mã QR truy cập động" as UC20
+  usecase "UC21\nHiển thị QR trên ứng dụng" as UC21
+  usecase "UC22\nQuét QR tại trạm" as UC22
+  usecase "UC23\nKiểm tra tính hợp lệ của QR" as UC23
+  usecase "UC24\nKiểm tra quyền mở tủ theo người dùng, trạm, đơn hàng" as UC24
+  usecase "UC25\nRa lệnh mở khóa ngăn tủ" as UC25
+  usecase "UC26\nHết hạn, thu hồi hoặc đánh dấu QR đã sử dụng" as UC26
+}
+R4 -- UC19
+R5 -- UC19
+R4 -- UC21
+R5 -- UC21
+SCAN -- UC22
+HW -- UC25
+UC19 ..> UC20 : <<include>>
+UC20 ..> UC21 : <<include>>
+UC22 ..> UC23 : <<include>>
+UC22 ..> UC24 : <<include>>
+UC24 ..> UC25 : <<include>>
+UC20 ..> UC26 : <<include>>
+UC25 ..> UC26 : <<include>>
+@enduml
