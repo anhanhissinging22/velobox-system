@@ -10,10 +10,10 @@ Thiết lập:
 
 1. Cài Node.js có hỗ trợ `node:sqlite` (Node.js 22 trở lên).
 2. Chạy `node server.mjs` trên máy sẽ lưu database; hoàn tất thiết lập Admin trước khi bật tunnel.
-3. Tạo một tunnel HTTPS ổn định trỏ về `http://127.0.0.1:4173`. Máy chủ phải luôn bật để người dùng truy cập.
-4. Ghi URL tunnel vào `apiBaseUrl` trong `velobox-config.js`, ví dụ `https://api.example.com`.
-5. Đảm bảo `VELOBOX_ALLOWED_ORIGINS` có origin GitHub Pages `https://anhanhissinging22.github.io` (mặc định đã cho phép origin này), rồi khởi động lại backend.
-6. Commit và push source lên nhánh `main`. Trong GitHub vào **Settings → Pages**, chọn deploy từ nhánh `main` và thư mục `/ (root)`. Link sẽ có dạng `https://anhanhissinging22.github.io/velobox-system/`.
+3. Trên repository GitHub, vào **Settings → Pages** và đặt custom domain là `velobox.trananhtlu.id.vn`. Sau đó, tại DNS provider tạo bản ghi `CNAME`: host `velobox`, trỏ tới `anhanhissinging22.github.io`. File `CNAME` trong repository đã chứa tên miền này. Domain gốc và `www` hiện tại được giữ nguyên.
+4. Tạo một tunnel HTTPS ổn định cho hostname `api.trananhtlu.id.vn`, trỏ về `http://127.0.0.1:4173`. Cấu hình bản ghi DNS `api` theo hướng dẫn của tunnel provider. Máy chủ phải luôn bật để người dùng truy cập.
+5. Backend đã cho phép origin `https://velobox.trananhtlu.id.vn`; `velobox-config.js` đã trỏ API về `https://api.trananhtlu.id.vn`. Khởi động lại backend sau khi tạo tunnel.
+6. Commit và push source lên nhánh `main`, rồi chọn deploy từ nhánh `main` và thư mục `/ (root)` trong Pages. Khi DNS và HTTPS hoạt động, link giao diện là `https://velobox.trananhtlu.id.vn/`.
 
 Tất cả người dùng truy cập cùng dữ liệu SQLite trên máy chủ. Không đưa file database, khóa tunnel hoặc thông tin bí mật lên GitHub. Nếu dùng tunnel tạm có URL thay đổi, cần cập nhật `velobox-config.js` và publish lại; nên dùng hostname tunnel ổn định.
 
