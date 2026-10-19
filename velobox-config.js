@@ -1,3 +1,2 @@
-// Temporary Cloudflare Quick Tunnel for the currently running local API.
-// The URL changes when the tunnel stops.
-window.VELOBOX_CONFIG = { apiBaseUrl: 'https://years-concerns-from-titanium.trycloudflare.com' };
+// Stable Tailscale Funnel hostname for the VELOBOX API.
+window.VELOBOX_CONFIG = { apiBaseUrl: 'https://asus-trananh.tailb3b6ca.ts.net' };

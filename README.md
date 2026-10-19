@@ -13,11 +13,11 @@ Thiết lập:
 1. Cài Node.js có hỗ trợ `node:sqlite` (Node.js 22 trở lên).
 2. Chạy `node server.mjs` trên máy sẽ lưu database; hoàn tất thiết lập Admin trước khi bật tunnel.
 3. Trên repository VELOBOX, vào **Settings → Pages** và đặt custom domain là `trananhtlu.id.vn`. File `CNAME` trong repository đã chứa domain này. Các bản ghi DNS gốc cần trỏ tới GitHub Pages; giữ nguyên cấu hình `www` nếu muốn website SUVELLA tiếp tục dùng hostname đó.
-4. Tạo một tunnel HTTPS ổn định cho hostname `api.trananhtlu.id.vn`, trỏ về `http://127.0.0.1:4173`. Cấu hình bản ghi DNS `api` theo hướng dẫn của tunnel provider. Máy chủ phải luôn bật để người dùng truy cập.
-5. Backend đã cho phép origin `https://trananhtlu.id.vn`; `velobox-config.js` đã trỏ API về `https://api.trananhtlu.id.vn`. Khởi động lại backend sau khi tạo tunnel.
+4. Trên máy chủ, đăng nhập Tailscale và chạy `tailscale funnel --bg 4173` để công khai API qua Funnel. Hostname Funnel hiện tại là `https://asus-trananh.tailb3b6ca.ts.net`; Tailscale phải đang chạy và máy chủ phải bật để người dùng truy cập.
+5. `velobox-config.js` trỏ API về `https://asus-trananh.tailb3b6ca.ts.net`; backend cho phép origin `https://trananhtlu.id.vn`. Nếu hostname Funnel thay đổi, cập nhật cấu hình này rồi publish lại giao diện.
 6. Commit và push source lên nhánh `main`, rồi chọn deploy từ nhánh `main` và thư mục `/ (root)` trong Pages. Khi DNS và HTTPS hoạt động, link giao diện là `https://trananhtlu.id.vn/`.
 
-Tất cả người dùng truy cập cùng dữ liệu SQLite trên máy chủ. Không đưa file database, khóa tunnel hoặc thông tin bí mật lên GitHub. Nếu dùng tunnel tạm có URL thay đổi, cần cập nhật `velobox-config.js` và publish lại; nên dùng hostname tunnel ổn định.
+Tất cả người dùng truy cập cùng dữ liệu SQLite trên máy chủ. Không đưa file database, khóa tunnel hoặc thông tin bí mật lên GitHub. Máy chủ, backend và Tailscale cần hoạt động liên tục; nếu máy hoặc mạng mất kết nối thì API tạm thời không truy cập được.
 
 Để chỉ dùng trong cùng mạng nội bộ, chạy `start-local-hosting.bat` và mở `http://<địa-chỉ-IPv4-của-máy-chủ>:4173/` từ thiết bị khác (xem `ipconfig`).
 
