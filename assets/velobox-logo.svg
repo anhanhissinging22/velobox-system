@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 120" role="img" aria-labelledby="title desc">
+  <title id="title">VELOBOX</title>
+  <desc id="desc">VELOBOX Smart Locker. Smarter Delivery.</desc>
+  <g transform="translate(4 7)">
+    <path d="M44 0 84 23 44 46 4 23 44 0Z" fill="#0B5FFF"/>
+    <path d="M4 23 44 46v46L4 69V23Z" fill="#0F172A"/>
+    <path d="M84 23 44 46v46l40-23V23Z" fill="#3B82F6"/>
+    <path d="m52 50 23-13v22L52 72V50Z" fill="#FF8A00"/>
+    <path d="m44 0 40 23v46L44 92 4 69V23L44 0Z" fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M44 46v46M4 23l40 23 40-23" fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round"/>
+  </g>
+  <text x="108" y="68" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-2">
+    <tspan fill="#0F172A">VELO</tspan><tspan fill="#0B5FFF">BOX</tspan>
+  </text>
+  <text x="111" y="96" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="4.2">SMART LOCKER. SMARTER DELIVERY.</text>
+</svg>

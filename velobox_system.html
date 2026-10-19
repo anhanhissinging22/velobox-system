@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>VELOBOX · Smart Locker Operations</title>
     <meta name="theme-color" content="#0F172A" />
+    <link rel="icon" type="image/svg+xml" href="./assets/velobox-mark.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -157,6 +158,8 @@
       .brand-mark .icon { width: 38px; height: 38px; stroke: none; }
       .brand-velo { color: inherit; }
       .brand-box { color: var(--blue); }
+      .brand-logo { display: block; width: min(100%, 380px); height: auto; }
+      .sidebar .brand-logo { width: 190px; max-width: 100%; }
       .brand small {
         display: block;
         color: #8ca1bb;
@@ -1662,8 +1665,7 @@
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-head">
           <div class="brand">
-            <div class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-brand-cube"></use></svg></div>
-            <div><span class="brand-velo">VELO</span><span class="brand-box">BOX</span><small>SMART LOCKER · SMARTER DELIVERY</small></div>
+            <img class="brand-logo" src="./assets/velobox-logo.svg" alt="VELOBOX · Smart Locker. Smarter Delivery." />
           </div>
           <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Đóng thanh bên" title="Đóng thanh bên"><svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg></button>
         </div>
