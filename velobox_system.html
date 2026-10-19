@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>VELOBOX · Smart Locker Operations</title>
+    <meta name="theme-color" content="#0F172A" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script>
       if (window.location.protocol === "file:") {
         window.location.replace("http://127.0.0.1:4173/");
@@ -23,20 +27,20 @@
         padding: 25px;
       }
       :root {
-        --navy: #14263f;
-        --navy2: #1c3555;
-        --blue: #246bfd;
-        --cyan: #11b8c8;
-        --bg: #f3f6fb;
+        --navy: #0f172a;
+        --navy2: #18243a;
+        --blue: #0b5fff;
+        --cyan: #3b82f6;
+        --bg: #f1f5f9;
         --card: #fff;
-        --text: #19283d;
-        --muted: #718096;
-        --line: #e7edf5;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
         --green: #16a673;
-        --orange: #ed9638;
+        --orange: #ff8a00;
         --red: #e25454;
         --purple: #8063d8;
-        --shadow: 0 10px 28px #233b5b0b;
+        --shadow: 0 10px 28px #0f172a0a;
       }
       * {
         box-sizing: border-box;
@@ -143,14 +147,16 @@
         font-size: 18px;
       }
       .brand-mark {
-        width: 34px;
-        height: 34px;
-        border-radius: 11px;
-        background: linear-gradient(135deg, #4b91ff, #17c6cb);
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
         display: grid;
         place-items: center;
-        color: white;
+        color: var(--blue);
       }
+      .brand-mark .icon { width: 38px; height: 38px; stroke: none; }
+      .brand-velo { color: inherit; }
+      .brand-box { color: var(--blue); }
       .brand small {
         display: block;
         color: #8ca1bb;
@@ -188,9 +194,9 @@
         color: white;
       }
       .nav button.active {
-        background: #246bfd;
+        background: var(--blue);
         color: white;
-        box-shadow: 0 6px 14px #246bfd44;
+        box-shadow: 0 6px 14px #0b5fff44;
       }
       .nav .ico {
         width: 18px;
@@ -371,10 +377,10 @@
       .btn-primary {
         background: var(--blue);
         color: white;
-        box-shadow: 0 5px 12px #246bfd2b;
+        box-shadow: 0 5px 12px #0b5fff2b;
       }
       .btn-primary:hover {
-        background: #1259e8;
+        background: #084fda;
         transform: translateY(-1px);
       }
       .btn-light {
@@ -1568,11 +1574,60 @@
       .sensor-panel{margin-top:15px;padding:16px;border:1px solid #dce9f5;border-radius:14px;background:#f7fbff}
       .sensor-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
       @media(max-width:560px){.sensor-controls{grid-template-columns:1fr}}
+
+      /* VELOBOX brand identity */
+      body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .sidebar { background: linear-gradient(180deg, #0f172a 0%, #111d33 100%); }
+      .brand { letter-spacing: .8px; }
+      .brand > div:last-child { font-size: 20px; font-weight: 800; letter-spacing: .15px; }
+      .brand small { letter-spacing: 1.35px; font-size: 8px; }
+      .topbar { background: rgba(255,255,255,.96); backdrop-filter: blur(14px); }
+      .nav button.active { background: var(--blue); box-shadow: 0 7px 18px #0b5fff3d; }
+      .nav-label { color: #94a3b8; }
+      .btn { border-radius: 9px; min-height: 36px; }
+      .btn-primary { background: var(--blue); box-shadow: 0 6px 15px #0b5fff2e; }
+      .btn-primary:hover { background: #084fda; }
+      .btn-light { color: #334155; border-color: #dbe4ef; }
+      .btn-light:hover { border-color: #93b4ff; background: #f4f8ff; color: #0b5fff; }
+      .card, .stat, .station, .action-card, .payment-card, .unlock-qr-card, .sensor-panel {
+        border-color: #e2e8f0;
+        box-shadow: 0 8px 26px #0f172a0a;
+      }
+      .card, .stat, .station, .action-card { border-radius: 14px; }
+      .page-head h1 { color: #0f172a; letter-spacing: -.65px; }
+      .eyebrow, .link-btn, .delivery-card-hint { color: var(--blue); }
+      .status.st-orange { background: #fff4e5; color: #c96b00; }
+      .status.st-blue { background: #eaf2ff; color: #1456d9; }
+      .status.st-green { background: #eaf8f0; color: #16804f; }
+      .s-blue, .i-blue { background: #eaf2ff; color: #0b5fff; }
+      .s-teal, .i-teal { background: #eaf2ff; color: #3b82f6; }
+      .s-orange, .i-orange { background: #fff2e2; color: #e87800; }
+      .s-purple { background: #eef0ff; color: #6254c7; }
+      .avatar { background: #eaf2ff; color: #0b5fff; }
+      .form input:focus, .form select:focus, .form textarea:focus, .search:focus {
+        outline: 3px solid #0b5fff1c; border-color: #7ca7ff;
+      }
+      .form .neighborhood-checks label:has(input:checked) { border-color: #8bb0ff; background: #edf4ff; color: #174ea6; }
+      .delivery-order-card { border-color: #e2e8f0; box-shadow: 0 6px 20px #0f172a0a; }
+      .delivery-order-card:hover:not(:disabled) { border-color: #8bb0ff; box-shadow: 0 12px 26px #0b5fff14; }
+      .delivery-card-cell { border-color: #e8edf4; color: #475569; }
+      .scan-order-summary b { color: #0f172a; }
+      .qr-countdown { color: var(--blue); }
+      .unlock-qr-image.scan-pulse { outline-color: var(--blue); }
+      .chat-head { background: linear-gradient(110deg, #0b5fff, #3b82f6); }
+      .bot-fab { background: linear-gradient(135deg, #0b5fff, #3b82f6); }
+      .toast { background: #0f172a; }
+      .online { background: #22c55e; box-shadow: 0 0 0 3px #22c55e22; }
+      .invoice-icon { background: #fff2e2; color: #e87800; }
+      @media (prefers-reduced-motion: no-preference) {
+        .btn, .nav button, .delivery-order-card, .icon-btn { transition-duration: .16s; }
+      }
     </style>
   </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
       <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9M9 21v-7h6v7"/></symbol>
+      <symbol id="icon-brand-cube" viewBox="0 0 48 48"><path d="M24 2 45 14 24 26 3 14 24 2Z" fill="#0B5FFF"/><path d="M3 14 24 26v20L3 34V14Z" fill="#0F172A"/><path d="M45 14 24 26v20l21-12V14Z" fill="#3B82F6"/><path d="m28 28 12-7v10l-12 7V28Z" fill="#FF8A00"/><path d="m24 2 21 12v20L24 46 3 34V14L24 2Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></symbol>
       <symbol id="icon-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></symbol>
       <symbol id="icon-package" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/></symbol>
       <symbol id="icon-locker" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M12 3v18M9 6h.01M15 12h.01M9 18h.01"/></symbol>
@@ -1607,8 +1662,8 @@
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-head">
           <div class="brand">
-            <div class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-home"></use></svg></div>
-            <div>VELOBOX<small>SMART LOCKER PLATFORM</small></div>
+            <div class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-brand-cube"></use></svg></div>
+            <div><span class="brand-velo">VELO</span><span class="brand-box">BOX</span><small>SMART LOCKER · SMARTER DELIVERY</small></div>
           </div>
           <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Đóng thanh bên" title="Đóng thanh bên"><svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg></button>
         </div>
