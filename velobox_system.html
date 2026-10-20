@@ -316,6 +316,18 @@
         border: 1px solid white;
         border-radius: 50%;
       }
+      .notification-wrap { position: relative; }
+      .notification-panel { position: absolute; right: 0; top: calc(100% + 10px); width: min(380px, calc(100vw - 32px)); max-height: min(540px, calc(100vh - 100px)); overflow: auto; padding: 8px; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 48px rgba(15,23,42,.18); z-index: 20; }
+      .notification-panel[hidden] { display: none; }
+      .notification-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 12px; color: var(--text); font-size: 13px; }
+      .notification-panel-head span, .notification-item-time { color: var(--muted); font-size: 11px; }
+      .notification-item { border-top: 1px solid var(--line); }
+      .notification-item-trigger { position: relative; display: flex; flex-direction: column; gap: 5px; width: 100%; padding: 12px 30px 12px 11px; text-align: left; color: var(--text); background: #fff; }
+      .notification-item-trigger:hover, .notification-item.is-unread .notification-item-trigger { background: #f7faff; }
+      .notification-item-title { font-size: 12px; font-weight: 700; }
+      .notification-unread-dot { position: absolute; right: 12px; top: 18px; width: 8px; height: 8px; border-radius: 50%; background: #ef5b61; }
+      .notification-item-body { padding: 0 11px 13px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .notification-empty { padding: 24px 12px; color: var(--muted); text-align: center; font-size: 12px; }
       .role-select {
         border: 1px solid var(--line);
         border-radius: 9px;
@@ -1555,7 +1567,9 @@
       }
 
       .delivery-order-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-top:18px}
+      .resident-order-section{margin-top:24px}.resident-order-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.resident-order-section-head h2{margin:0;font-size:16px}.resident-order-section-head span{color:var(--muted);font-size:12px}
       .delivery-order-card{display:block;width:100%;text-align:left;background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:18px;box-shadow:0 5px 18px #162d4b0a;cursor:pointer;transition:transform .16s,border-color .16s,box-shadow .16s;color:inherit}
+      .delivery-order-card-main{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;color:inherit;cursor:pointer}.return-request-btn{margin-top:14px}
       .delivery-order-card:hover:not(:disabled){transform:translateY(-2px);border-color:#9bbcff;box-shadow:0 10px 24px #162d4b12}
       .delivery-order-card:disabled{opacity:.58;cursor:not-allowed}
       .delivery-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
@@ -1734,8 +1748,8 @@
             </div>
           </div>
           <div class="top-right">
-            <button class="icon-btn" id="notifyBtn" title="Thông báo" aria-label="Thông báo">
-              <svg class="icon" aria-hidden="true"><use href="#icon-bell"></use></svg><i class="dot"></i></button>
+            <div class="notification-wrap"><button class="icon-btn" id="notifyBtn" title="Thông báo" aria-label="Thông báo" aria-expanded="false" aria-controls="notificationPanel">
+              <svg class="icon" aria-hidden="true"><use href="#icon-bell"></use></svg><i class="dot" id="notificationDot" hidden></i></button><div class="notification-panel" id="notificationPanel" hidden></div></div>
             <button class="logout-btn" data-action="logout" type="button">Đăng xuất</button>
             <div class="avatar" id="avatar">AD</div>
           </div>
@@ -1764,6 +1778,6 @@
     <div class="toast" id="toast"></div>
     <script src="./velobox-config.js?v=20261020-1"></script>
     <script src="./qrcode.min.js" defer></script>
-    <script src="./app.js?v=20261020-3" defer></script>
+    <script src="./app.js?v=20261020-9" defer></script>
   </body>
 </html>
