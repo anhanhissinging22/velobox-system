@@ -46,7 +46,19 @@ for (const order of db.prepare("SELECT id,neighborhood_id FROM orders WHERE assi
 const roles = new Set(['SYSTEM_ADMIN','OPERATIONS','CARRIER_ADMIN','SHIPPER','RESIDENT','SITE_MANAGER','FINANCE','TECHNICIAN','BUILDING_ADMIN']);
 const roleLabels = {SYSTEM_ADMIN:'Admin VELOBOX',OPERATIONS:'Nhân viên vận hành',CARRIER_ADMIN:'Quản trị đối tác giao hàng',SHIPPER:'Shipper',RESIDENT:'Người nhận',SITE_MANAGER:'Quản lý điểm đặt / BQL',FINANCE:'Tài chính',TECHNICIAN:'Kỹ thuật viên',BUILDING_ADMIN:'Quản trị viên / BQL'};
 const now = () => new Date().toISOString();
-const allowedOrigins = new Set((process.env.VELOBOX_ALLOWED_ORIGINS || 'https://trananhtlu.id.vn,https://anhanhissinging22.github.io,http://localhost:4173,http://127.0.0.1:4173').split(',').map(value=>value.trim()).filter(Boolean));
+const allowedOrigins = new Set((process.env.VELOBOX_ALLOWED_ORIGINS || 'https://trananhtlu.id.vn,https://www.trananhtlu.id.vn,https://anhanhissinging22.github.io,https://asus-trananh.tailb3b6ca.ts.net,http://localhost:4173,http://127.0.0.1:4173').split(',').map(value=>value.trim()).filter(Boolean));
+function checkOriginAllowed(origin, host) {
+  if (!origin) return false;
+  if (allowedOrigins.has(origin)) return true;
+  if (origin === `http://${host}` || origin === `https://${host}`) return true;
+  try {
+    const u = new URL(origin);
+    if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') return true;
+    if (/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(u.hostname)) return true;
+    if (u.hostname.endsWith('.ts.net') || u.hostname.endsWith('trananhtlu.id.vn') || u.hostname.endsWith('github.io')) return true;
+  } catch {}
+  return false;
+}
 const initials = value => String(value||'').trim().replace(/đ/gi,'d').normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/[^a-zA-Z0-9]+/).filter(Boolean).map(word=>word[0]).join('').toUpperCase();
 const dateCode = (value=new Date()) => { const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',year:'2-digit'}).formatToParts(value);return `${parts.find(p=>p.type==='day').value}${parts.find(p=>p.type==='month').value}${parts.find(p=>p.type==='year').value}`; };
 for(const row of db.prepare("SELECT id,name FROM neighborhoods WHERE code='' OR code IS NULL").all())db.prepare('UPDATE neighborhoods SET code=? WHERE id=?').run(initials(row.name),row.id);
@@ -264,6 +276,6 @@ async function route(req,res){
  return send(res,405,{error:'Phương thức không được hỗ trợ'});
 }
 
-const server=http.createServer((req,res)=>{const origin=req.headers.origin,sameOrigin=origin===`http://${req.headers.host}`||origin===`https://${req.headers.host}`,originAllowed=!!origin&&(allowedOrigins.has(origin)||sameOrigin);if(originAllowed){res.setHeader('access-control-allow-origin',origin);res.setHeader('vary','Origin');res.setHeader('access-control-allow-methods','GET, POST, PATCH, DELETE, OPTIONS');res.setHeader('access-control-allow-headers','Content-Type, Authorization, X-VeloBox-Secret, X-VeloBox-Source');}if(req.method==='OPTIONS'){if(!originAllowed){res.writeHead(403);return res.end();}res.writeHead(204);return res.end();}route(req,res).catch(err=>{console.error(err);if(!res.headersSent)send(res,500,{error:'Lỗi máy chủ',detail:process.env.NODE_ENV==='development'?err.message:undefined});});});
+const server=http.createServer((req,res)=>{const origin=req.headers.origin,originAllowed=checkOriginAllowed(origin,req.headers.host);if(originAllowed){res.setHeader('access-control-allow-origin',origin);res.setHeader('vary','Origin');res.setHeader('access-control-allow-methods','GET, POST, PATCH, DELETE, OPTIONS');res.setHeader('access-control-allow-headers','Content-Type, Authorization, X-VeloBox-Secret, X-VeloBox-Source');}if(req.method==='OPTIONS'){if(!originAllowed){res.writeHead(403);return res.end();}res.writeHead(204);return res.end();}route(req,res).catch(err=>{console.error(err);if(!res.headersSent)send(res,500,{error:'Lỗi máy chủ',detail:process.env.NODE_ENV==='development'?err.message:undefined});});});
 const port=Number(process.env.PORT)||4173;const host=process.env.HOST||'127.0.0.1';server.listen(port,host,()=>console.log(`VELOBOX đang chạy tại http://${host}:${port}`));
 process.on('SIGINT',()=>{server.close(()=>{db.close();process.exit(0);});});
