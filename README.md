@@ -4,18 +4,18 @@ Prototype vận hành chạy trên Node.js và SQLite cục bộ. Giao diện đ
 
 ## Dùng giao diện GitHub Pages, lưu SQLite trên máy chủ riêng
 
-Người dùng chỉ cần trình duyệt; không cần cài VELOBOX. GitHub Pages phục vụ giao diện tĩnh tại `https://trananhtlu.id.vn/`, còn Node.js và SQLite chạy trên máy chủ của bạn. GitHub Pages không chạy backend Node.js, vì vậy cần một địa chỉ HTTPS công khai ổn định (tunnel) trỏ về máy chủ để giao diện gọi API. Không mở cổng router trực tiếp ra Internet.
+Người dùng chỉ cần trình duyệt; không cần cài VELOBOX. GitHub Pages phục vụ giao diện tĩnh tại `https://velobox.trananhtlu.id.vn/`, còn Node.js và SQLite chạy trên máy chủ của bạn. GitHub Pages không chạy backend Node.js, vì vậy cần một địa chỉ HTTPS công khai ổn định (tunnel) trỏ về máy chủ để giao diện gọi API. Không mở cổng router trực tiếp ra Internet.
 
-Domain gốc hiện đang hiển thị website SUVELLA. Chuyển `trananhtlu.id.vn` sang VELOBOX sẽ thay website đó; hãy gỡ domain khỏi cấu hình GitHub Pages cũ trước khi gắn vào repository VELOBOX.
+VELOBOX dùng subdomain `velobox.trananhtlu.id.vn`; website SUVELLA trên domain gốc `trananhtlu.id.vn` không bị thay đổi.
 
 Thiết lập:
 
 1. Cài Node.js có hỗ trợ `node:sqlite` (Node.js 22 trở lên).
 2. Chạy `node server.mjs` trên máy sẽ lưu database; hoàn tất thiết lập Admin trước khi bật tunnel.
-3. Trên repository VELOBOX, vào **Settings → Pages** và đặt custom domain là `trananhtlu.id.vn`. File `CNAME` trong repository đã chứa domain này. Các bản ghi DNS gốc cần trỏ tới GitHub Pages; giữ nguyên cấu hình `www` nếu muốn website SUVELLA tiếp tục dùng hostname đó.
+3. Trên repository VELOBOX, vào **Settings → Pages** và đặt custom domain là `velobox.trananhtlu.id.vn`. File `CNAME` trong repository đã chứa domain này. Tạo bản ghi DNS `CNAME` cho `velobox` trỏ tới `anhanhissinging22.github.io`; giữ nguyên các bản ghi của domain gốc và `www` cho SUVELLA.
 4. Trên máy chủ, đăng nhập Tailscale và chạy `tailscale funnel --bg 4173` để công khai API qua Funnel. Hostname Funnel hiện tại là `https://asus-trananh.tailb3b6ca.ts.net`; Tailscale phải đang chạy và máy chủ phải bật để người dùng truy cập.
-5. `velobox-config.js` trỏ API về `https://asus-trananh.tailb3b6ca.ts.net`; backend cho phép origin `https://trananhtlu.id.vn`. Nếu hostname Funnel thay đổi, cập nhật cấu hình này rồi publish lại giao diện.
-6. Commit và push source lên nhánh `main`, rồi chọn deploy từ nhánh `main` và thư mục `/ (root)` trong Pages. Khi DNS và HTTPS hoạt động, link giao diện là `https://trananhtlu.id.vn/`.
+5. `velobox-config.js` trỏ API về `https://asus-trananh.tailb3b6ca.ts.net`; backend cho phép origin `https://velobox.trananhtlu.id.vn`. Nếu hostname Funnel thay đổi, cập nhật cấu hình này rồi publish lại giao diện.
+6. Commit và push source lên nhánh `main`, rồi chọn deploy từ nhánh `main` và thư mục `/ (root)` trong Pages. Khi DNS và HTTPS hoạt động, link giao diện là `https://velobox.trananhtlu.id.vn/`.
 
 Tất cả người dùng truy cập cùng dữ liệu SQLite trên máy chủ. Không đưa file database, khóa tunnel hoặc thông tin bí mật lên GitHub. Máy chủ, backend và Tailscale cần hoạt động liên tục; nếu máy hoặc mạng mất kết nối thì API tạm thời không truy cập được.
 
